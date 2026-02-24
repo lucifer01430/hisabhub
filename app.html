@@ -1,0 +1,638 @@
+﻿<!doctype html>
+<html lang="en" data-theme="light">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HisabHub | Dashboard</title>
+  <meta name="description"
+    content="Offline-first HisabHub for secure daily income and expense management, monthly insights, and PDF financial reports.">
+  <meta name="keywords"
+    content="HisabHub, offline finance app, budget planner, personal finance, monthly expense report, privacy-first app">
+  <meta name="author" content="Harsh Pandey">
+  <meta property="og:title" content="HisabHub | Offline-First Personal Finance Dashboard">
+  <meta property="og:description"
+    content="Track income and expenses offline, visualize spending, and export monthly PDF reports with a modern dashboard experience.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://lucifer01430.github.io/Portfolio/">
+  <meta property="og:image" content="/favicon/web-app-manifest-512x512.png">
+  <meta name="theme-color" content="#0d6efd">
+  <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
+  <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
+  <link rel="shortcut icon" href="/favicon/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
+  <meta name="apple-mobile-web-app-title" content="HisabHub" />
+  <link rel="manifest" href="/favicon/site.webmanifest" />
+  <script>
+    (function () {
+      try {
+        var savedTheme = localStorage.getItem("theme") || "light";
+        if (savedTheme) document.documentElement.setAttribute("data-theme", savedTheme);
+      } catch (_e) { }
+    })();
+  </script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div class="app-bg"></div>
+
+  <main class="container py-4 py-md-5">
+    <section id="authView" class="auth-shell">
+      <div class="auth-card-wrap w-100">
+        <div class="glass-card auth-card p-3 p-md-4">
+          <h1 class="h3 mb-3 text-center"><a href="index.html" style="text-decoration: none;">HisabHub</a></h1>
+          <ul class="nav nav-pills nav-fill mb-3" id="authTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active" id="login-tab" data-bs-toggle="pill" data-bs-target="#loginPane"
+                type="button" role="tab" aria-controls="loginPane" aria-selected="true">Login</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="register-tab" data-bs-toggle="pill" data-bs-target="#registerPane"
+                type="button" role="tab" aria-controls="registerPane" aria-selected="false">Register</button>
+            </li>
+          </ul>
+
+          <div class="tab-content" id="authTabContent">
+            <div class="tab-pane fade show active" id="loginPane" role="tabpanel" aria-labelledby="login-tab"
+              tabindex="0">
+              <form id="loginForm" novalidate>
+                <div class="mb-3">
+                  <label for="loginUsername" class="form-label">Username</label>
+                  <input type="text" id="loginUsername" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                  <label for="loginPassword" class="form-label">Password</label>
+                  <input type="password" id="loginPassword" class="form-control" required>
+                </div>
+                <button class="btn btn-brand w-100" type="submit">Login</button>
+              </form>
+              <button class="btn btn-link px-0 mt-2" id="openForgotPassword" type="button">Forgot password?</button>
+            </div>
+
+            <div class="tab-pane fade" id="registerPane" role="tabpanel" aria-labelledby="register-tab" tabindex="0">
+              <form id="registerForm" novalidate>
+                <div class="mb-3">
+                  <label for="registerFullName" class="form-label">Full Name</label>
+                  <input type="text" id="registerFullName" class="form-control" maxlength="80" required>
+                </div>
+                <div class="mb-3">
+                  <label for="registerUsername" class="form-label">Username</label>
+                  <input type="text" id="registerUsername" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                  <label for="registerPassword" class="form-label">Password</label>
+                  <input type="password" id="registerPassword" class="form-control" minlength="8" required>
+                </div>
+                <div class="mb-3">
+                  <label for="registerPin" class="form-label">4-digit Recovery PIN</label>
+                  <input type="password" id="registerPin" class="form-control" pattern="\\d{4}" maxlength="4" required>
+                </div>
+                <button class="btn btn-brand w-100" type="submit">Create Account</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="appView" class="d-none">
+      <nav class="navbar navbar-expand-lg navbar-dark brand-navbar rounded-4 px-3 mb-4 shadow-soft">
+        <span class="navbar-brand fw-semibold" style="color: #ffff!important;">Finance Dashboard</span>
+        <div class="ms-auto d-flex align-items-center gap-2">
+          <button id="themeToggle" class="btn btn-sm btn-outline-light rounded-pill" type="button"
+            aria-label="Toggle dark mode">
+            <i class="bi bi-moon-stars"></i>
+          </button>
+          <div class="dropdown">
+            <button class="btn btn-sm btn-outline-light rounded-pill dropdown-toggle" type="button"
+              data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="bi bi-person-circle"></i> Account
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><button class="dropdown-item" id="backupRestoreBtn" type="button">Backup & Restore</button></li>
+              <li><button class="dropdown-item" id="userGuideBtn" type="button">User Guide</button></li>
+              <li><button class="dropdown-item" id="aboutDeveloperBtn" type="button">About Developer</button></li>
+              <li><button class="dropdown-item" id="policyBtn" type="button">Policy & Disclaimer</button></li>
+              <li>
+                <hr class="dropdown-divider">
+              </li>
+              <li><button class="dropdown-item text-danger" id="logoutBtn" type="button">Logout</button></li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+
+      <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+        <h2 class="h4 mb-0" id="welcomeText">Welcome</h2>
+        <button class="btn btn-outline-primary rounded-pill" id="manageCategoriesBtn" type="button">Manage
+          Categories</button>
+      </div>
+      <div class="glass-card p-3 mb-3">
+        <p class="mb-0" id="dashboardOverview">
+          Track your daily income and expenses in a secure offline-first workspace, gain clear spending insights, and
+          generate professional monthly reports to stay in control of your budget.
+        </p>
+      </div>
+
+      <div class="row g-3 mb-4">
+        <div class="col-6 col-lg-3">
+          <div class="glass-card p-3 metric-card">
+            <p class="text-muted small mb-1">This Month Income</p>
+            <h3 class="h5 mb-0" id="cardMonthIncome">₹0</h3>
+          </div>
+        </div>
+        <div class="col-6 col-lg-3">
+          <div class="glass-card p-3 metric-card">
+            <p class="text-muted small mb-1">This Month Expense</p>
+            <h3 class="h5 mb-0" id="cardMonthExpense">₹0</h3>
+          </div>
+        </div>
+        <div class="col-6 col-lg-3">
+          <div class="glass-card p-3 metric-card">
+            <p class="text-muted small mb-1">Remaining Balance</p>
+            <h3 class="h5 mb-0" id="cardRemaining">₹0</h3>
+          </div>
+        </div>
+        <div class="col-6 col-lg-3">
+          <div class="glass-card p-3 metric-card">
+            <p class="text-muted small mb-1">Savings</p>
+            <h3 class="h5 mb-0" id="cardSavings">₹0</h3>
+          </div>
+        </div>
+      </div>
+
+      <div class="glass-card p-3 mb-4">
+        <div class="d-flex flex-wrap gap-2">
+          <button class="btn btn-brand rounded-pill" id="openIncomeModal" type="button">Add Income</button>
+          <button class="btn btn-brand rounded-pill" id="openExpenseModal" type="button">Add Expense</button>
+          <button class="btn btn-outline-primary rounded-pill" id="viewEntriesBtn" type="button">View Entries</button>
+          <button class="btn btn-outline-success rounded-pill" id="generatePdfBtn" type="button">Generate PDF</button>
+        </div>
+      </div>
+
+      <ul class="nav nav-tabs mb-3" id="mainTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active" id="calendar-tab" data-bs-toggle="tab" data-bs-target="#calendarPane"
+            type="button" role="tab" aria-controls="calendarPane" aria-selected="true">Calendar View</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="list-tab" data-bs-toggle="tab" data-bs-target="#listPane" type="button"
+            role="tab" aria-controls="listPane" aria-selected="false">List View</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="insights-tab" data-bs-toggle="tab" data-bs-target="#insightsPane" type="button"
+            role="tab" aria-controls="insightsPane" aria-selected="false">Insights</button>
+        </li>
+      </ul>
+
+      <div class="tab-content">
+        <section class="tab-pane fade show active" id="calendarPane" role="tabpanel" aria-labelledby="calendar-tab"
+          tabindex="0">
+          <div class="glass-card p-3 p-md-4">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+              <button class="btn btn-outline-secondary btn-sm rounded-pill" id="prevMonthBtn" type="button"><i
+                  class="bi bi-chevron-left"></i></button>
+              <h3 class="h5 mb-0" id="calendarMonthLabel"></h3>
+              <button class="btn btn-outline-secondary btn-sm rounded-pill" id="nextMonthBtn" type="button"><i
+                  class="bi bi-chevron-right"></i></button>
+            </div>
+            <div class="calendar-weekdays mb-2" id="calendarWeekdays"></div>
+            <div class="calendar-grid" id="calendarGrid"></div>
+            <div class="mt-3">
+              <button class="btn btn-brand rounded-pill" id="calendarAddExpenseBtn" type="button">Add Expense</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="tab-pane fade" id="listPane" role="tabpanel" aria-labelledby="list-tab" tabindex="0">
+          <div class="glass-card p-3 p-md-4">
+            <div class="row g-2 mb-3">
+              <div class="col-12 col-md-4">
+                <label for="listMonthFilter" class="form-label">Month</label>
+                <input type="month" id="listMonthFilter" class="form-control">
+              </div>
+              <div class="col-12 col-md-4">
+                <label for="listCategoryFilter" class="form-label">Category</label>
+                <select id="listCategoryFilter" class="form-select">
+                  <option value="all">All Categories</option>
+                </select>
+              </div>
+              <div class="col-12 col-md-4">
+                <label for="listSort" class="form-label">Sort</label>
+                <select id="listSort" class="form-select">
+                  <option value="newest">Newest</option>
+                  <option value="oldest">Oldest</option>
+                </select>
+              </div>
+            </div>
+            <div class="table-responsive">
+              <table class="table table-hover align-middle" id="expenseTable">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Category</th>
+                    <th>Amount (₹)</th>
+                    <th>Notes</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="expenseTableBody"></tbody>
+              </table>
+            </div>
+            <p class="mb-0 fw-semibold" id="monthlyTotalText">Monthly Total: ₹0</p>
+          </div>
+        </section>
+
+        <section class="tab-pane fade" id="insightsPane" role="tabpanel" aria-labelledby="insights-tab" tabindex="0">
+          <div class="row g-3 mb-3">
+            <div class="col-12 col-md-4">
+              <div class="glass-card p-3 h-100">
+                <p class="small text-muted mb-1">Total expense this month</p>
+                <h3 class="h5 mb-0" id="insightMonthExpense">₹0</h3>
+              </div>
+            </div>
+            <div class="col-12 col-md-4">
+              <div class="glass-card p-3 h-100">
+                <p class="small text-muted mb-1">Highest spending category</p>
+                <h3 class="h5 mb-0" id="insightTopCategory">-</h3>
+              </div>
+            </div>
+            <div class="col-12 col-md-4">
+              <div class="glass-card p-3 h-100">
+                <p class="small text-muted mb-1">Remaining savings</p>
+                <h3 class="h5 mb-0" id="insightSavings">₹0</h3>
+              </div>
+            </div>
+          </div>
+          <div class="row g-3">
+            <div class="col-12 col-lg-6">
+              <div class="glass-card p-3">
+                <h3 class="h6">Category-wise Expenses</h3>
+                <canvas id="categoryBarChart" height="220"></canvas>
+              </div>
+            </div>
+            <div class="col-12 col-lg-6">
+              <div class="glass-card p-3">
+                <h3 class="h6">Expense vs Income</h3>
+                <canvas id="incomeExpensePieChart" height="220"></canvas>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <footer class="text-center small pb-4">Designed & Developed by <a href="https://lucifer01430.github.io/Portfolio/"
+      target="_blank" rel="noopener noreferrer">Harsh Pandey</a></footer>
+
+  <div class="modal fade" id="expenseModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="expenseModalTitle">Add Expense</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="expenseForm" novalidate>
+          <div class="modal-body">
+            <input type="hidden" id="expenseId">
+            <div class="mb-3">
+              <label for="expenseDate" class="form-label">Date</label>
+              <input type="date" id="expenseDate" class="form-control" required>
+            </div>
+            <div class="mb-3">
+              <label for="expenseCategory" class="form-label">Category</label>
+              <select id="expenseCategory" class="form-select" required></select>
+            </div>
+            <div class="mb-3">
+              <label for="expenseAmount" class="form-label">Amount (₹)</label>
+              <input type="number" step="0.01" min="0.01" id="expenseAmount" class="form-control" required>
+            </div>
+            <div class="mb-3">
+              <label for="expenseNotes" class="form-label">Notes (optional)</label>
+              <textarea id="expenseNotes" class="form-control" maxlength="250" rows="3"></textarea>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-brand">Save Expense</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="incomeModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Add Income</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="incomeForm" novalidate>
+          <div class="modal-body">
+            <p class="small text-muted mb-2">Add one or more income updates in a single save.</p>
+            <div class="mb-3">
+              <label for="salaryBaseAmount" class="form-label">Monthly Salary Baseline (₹)</label>
+              <input type="number" step="0.01" min="0" id="salaryBaseAmount" class="form-control">
+            </div>
+            <div class="mb-3">
+              <label for="salaryOverrideMonth" class="form-label">Salary Override Month</label>
+              <input type="month" id="salaryOverrideMonth" class="form-control">
+            </div>
+            <div class="mb-3">
+              <label for="salaryOverrideAmount" class="form-label">Salary Override Amount (₹)</label>
+              <input type="number" step="0.01" min="0" id="salaryOverrideAmount" class="form-control">
+            </div>
+            <hr>
+            <div class="mb-3">
+              <label for="additionalIncomeDate" class="form-label">Additional Income Date</label>
+              <input type="date" id="additionalIncomeDate" class="form-control">
+            </div>
+            <div class="mb-3">
+              <label for="additionalIncomeAmount" class="form-label">Additional Income Amount (₹)</label>
+              <input type="number" step="0.01" min="0" id="additionalIncomeAmount" class="form-control">
+            </div>
+            <div class="mb-3">
+              <label for="additionalIncomeNote" class="form-label">Additional Income Note</label>
+              <input type="text" id="additionalIncomeNote" class="form-control" maxlength="120">
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-brand">Save Income</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="dayExpensesModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="dayExpensesTitle">Day Expenses</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="dayExpensesBody"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="forgotPasswordModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Reset Password</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="forgotPasswordForm" novalidate>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label for="forgotUsername" class="form-label">Username</label>
+              <input type="text" id="forgotUsername" class="form-control" required>
+            </div>
+            <div class="mb-3">
+              <label for="forgotPin" class="form-label">Recovery PIN</label>
+              <input type="password" id="forgotPin" class="form-control" maxlength="4" required>
+            </div>
+            <div class="mb-3">
+              <label for="newPassword" class="form-label">New Password</label>
+              <input type="password" id="newPassword" class="form-control" minlength="8" required>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-brand">Reset Password</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="categoryModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Manage Categories</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="categoryForm" class="d-flex gap-2 mb-3">
+            <input type="text" id="newCategoryName" class="form-control" placeholder="New category" maxlength="40"
+              required>
+            <button class="btn btn-brand" type="submit">Add</button>
+          </form>
+          <div id="categoryList" class="d-grid gap-2"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="aboutModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">About Developer</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body">
+
+          <p>
+            <a href="https://lucifer01430.github.io/Portfolio/" target="_blank" rel="noopener noreferrer">
+              <strong>Harsh Pandey</strong>
+            </a> is a product-focused web developer dedicated to building practical, user-friendly digital
+            tools that solve real-world workflow challenges with clarity, speed, and reliability.
+          </p>
+
+          <p>
+            His development approach centers on <strong>clean UI/UX design</strong>, performance-conscious
+            implementation, and <strong>privacy-first architecture</strong>. He specializes in creating
+            lightweight, responsive web applications that work smoothly across desktop and mobile devices
+            while remaining simple and efficient for everyday use.
+          </p>
+
+          <p>
+            Harsh actively focuses on <strong>offline-first productivity solutions</strong>, ensuring that
+            applications remain accessible without constant internet connectivity and that user data stays
+            secure on their own device whenever possible.
+          </p>
+
+          <p class="mb-3">
+            This HisabHub project reflects that philosophy — combining a clean dashboard interface,
+            practical financial tracking features, and a streamlined experience designed to help users
+            monitor income, control spending, and maintain consistent monthly budgeting with ease.
+          </p>
+
+          <p class="mb-0">
+            Explore more projects and professional work here:
+            <a href="https://lucifer01430.github.io/Portfolio/" target="_blank" rel="noopener noreferrer">
+              View Portfolio
+            </a>
+          </p>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="userGuideModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">User Guide</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body">
+
+          <h6 class="mb-2">Purpose of the App</h6>
+          <p>
+            HisabHub is an offline-first personal finance web application designed to help you
+            manage daily income and expenses in a simple, private, and organized way. It allows you to
+            record transactions, monitor monthly spending, and understand your financial habits through
+            visual insights — all without requiring an internet connection or external account system.
+          </p>
+          <p>
+            The app focuses on practical day-to-day budgeting, giving you a clear snapshot of your income,
+            expenses, savings, and remaining balance so you can make smarter financial decisions with minimal effort.
+          </p>
+
+          <h6 class="mt-3 mb-2">How to Use</h6>
+          <ol class="mb-2 ps-3">
+            <li><strong>Create your account</strong> by registering with your name, username, password, and recovery PIN
+              for local password reset.</li>
+            <li><strong>Add your monthly income</strong> such as salary or other earnings to establish your financial
+              baseline.</li>
+            <li><strong>Log expenses daily</strong> by entering the date, category, amount, and optional notes for each
+              transaction.</li>
+            <li><strong>Track activity visually</strong> using Calendar View for date-wise spending or List View for
+              detailed records.</li>
+            <li><strong>Analyze spending patterns</strong> in the Insights tab to see category distribution, totals, and
+              financial trends.</li>
+            <li><strong>Generate monthly PDF reports</strong> anytime to keep a professional summary of your finances
+              for records or review.</li>
+          </ol>
+
+          <h6 class="mt-3 mb-2">Key Features</h6>
+          <ul class="mb-2 ps-3">
+            <li>Monthly income tracking with automatic balance calculation.</li>
+            <li>Category-based expense logging for structured records.</li>
+            <li>Calendar, list, and insight views for multiple tracking styles.</li>
+            <li>One-click professional PDF export for monthly summaries.</li>
+            <li>Secure local storage ensuring your data stays on your device.</li>
+          </ul>
+
+          <h6 class="mt-3 mb-2">Why This App is Different</h6>
+          <ul class="mb-0 ps-3">
+            <li><strong>Offline-first architecture</strong> — works fully without internet or backend.</li>
+            <li><strong>Privacy-focused design</strong> — no personal or financial data is sent to servers.</li>
+            <li><strong>Lightweight and fast</strong> — loads instantly and runs smoothly on mobile or desktop.</li>
+            <li><strong>Clean dashboard experience</strong> — focuses on clarity instead of complex finance tools.</li>
+            <li><strong>Built for real-life budgeting</strong> — simple enough for daily use yet powerful for monthly
+              review.</li>
+          </ul>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="policyModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Policy & Disclaimer</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body">
+
+          <p>
+            This HisabHub application is developed and maintained by
+            <a href="https://lucifer01430.github.io/Portfolio/" target="_blank" rel="noopener noreferrer">
+              Harsh Pandey
+            </a>. By using this application, you agree to the following terms regarding usage, ownership, and
+            responsibility.
+          </p>
+
+          <ul class="ps-3 mb-3">
+
+            <li>
+              <strong>Ownership & Copyright:</strong> All rights to the application’s design, concept, source logic,
+              and interface belong to Harsh Pandey. The developer retains full intellectual and administrative control
+              over the product.
+            </li>
+
+            <li>
+              <strong>Usage Restrictions:</strong> Redistribution, resale, public hosting, or modification of this
+              application for commercial purposes is not permitted without explicit written permission from the
+              developer.
+            </li>
+
+            <li>
+              <strong>Personal Use Only:</strong> This tool is intended for personal financial tracking and budgeting
+              assistance. It does not provide certified financial, legal, or investment advice.
+            </li>
+
+            <li>
+              <strong>User Responsibility:</strong> Users are solely responsible for verifying the accuracy of their
+              financial entries, reports, and any decisions made based on the information recorded in this application.
+            </li>
+
+            <li>
+              <strong>Data Privacy:</strong> All financial and account data is stored locally on the user’s device
+              using browser localStorage. No personal or financial information is transmitted to external servers.
+            </li>
+
+            <li>
+              <strong>No Warranty:</strong> The application is provided “as is” without guarantees of uninterrupted
+              availability, accuracy, or fitness for a particular purpose.
+            </li>
+
+          </ul>
+
+          <p class="mb-0">
+            Continued use of this application indicates acceptance of these terms and acknowledgment of the
+            privacy-focused, offline-first design philosophy behind the product.
+          </p>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="backupModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Backup & Restore</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p class="small text-muted mb-3">Export your full account data as JSON for backup and import it later to
+            restore records.</p>
+          <div class="d-flex flex-wrap gap-2 mb-3">
+            <button type="button" id="exportDataBtn" class="btn btn-brand">Export Data</button>
+            <label class="btn btn-outline-primary mb-0" for="importDataFile">Import Data</label>
+            <input type="file" id="importDataFile" accept="application/json" class="d-none">
+          </div>
+          <p class="small mb-0">Backup format is designed for future cloud-drive integration without changing your
+            current local workflow.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <script src="script.js"></script>
+</body>
+
+</html>
