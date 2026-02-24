@@ -148,7 +148,15 @@ Hi, I'm **Harsh Pandey** – a self-driven web developer building practical side
 
 ## 📄 License
 
-This project is open source and available for personal and commercial use.
+© Harsh Pandey. All rights reserved.
+
+This project is provided for personal viewing and demonstration purposes only.  
+You are **not permitted** to copy, modify, redistribute, publish, sublicense, or use this code or design for commercial purposes without explicit written permission from the author.
+
+Unauthorized use, reproduction, or distribution of this project or any part of it is strictly prohibited.
+
+For permissions or inquiries, please contact the developer via portfolio:
+https://lucifer01430.github.io/Portfolio/
 
 ---
 
